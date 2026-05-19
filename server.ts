@@ -31,14 +31,19 @@ async function startServer() {
         
         Usage Data:
         - Total Time: ${usageData.totalTime} minutes
-        - Apps: ${usageData.apps.map((a: any) => `${a.name} (${a.time} min, Category: ${a.category})`).join(', ')}
+        - Apps Analysis: ${usageData.apps.map((a: any) => `${a.name} (${a.time} min, ${a.opens} launches, Category: ${a.category})`).join(', ')}
+        - Hourly Patterns: ${JSON.stringify(usageData.hourlyUsage)}
+        - Late Night Detections: ${JSON.stringify(usageData.nightUsage || "None detected")}
         - Date: ${usageData.date}
 
-        Please provide:
-        1. A brief summary of her activity.
-        2. Specific insights about her usage of YouTube, WhatsApp, and Games (like Roblox/Minecraft).
-        3. A supportive recommendation for the parents on how to balance this usage.
-        4. Keep the tone friendly, expert, and reassuring. The response should be in Arabic as requested by the user, or bilingual (Arabic/English) if appropriate, but primarily focus on the user's language.
+        Please provide a detailed report in Arabic including:
+        1. ملخص النشاط (Activity Summary): A brief summary of her activity.
+        2. تحليل الإدمان (Addiction Analysis): Identify if any apps have high launch counts (potential addiction) or excessive time.
+        3. تحليل النوم (Sleep Impact): Specifically comment on the ${usageData.nightUsage?.length > 0 ? "detections of late-night usage" : "lack of late-night usage"} and its impact.
+        4. درجة التركيز (Focus Score): Evaluate her focus score (0-100) based on educational vs entertainment ratio.
+        5. توصيات الخبراء (Expert Recommendations): Supportive advice for parents to maintain healthy habits.
+        
+        Keep the tone friendly, expert, and reassuring. The entire response SHOULD BE IN ARABIC.
       `;
       
       const result = await ai.models.generateContent({
