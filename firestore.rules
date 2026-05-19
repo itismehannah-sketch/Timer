@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(familyId) {
+      return isSignedIn() && get(/databases/$(database)/documents/families/$(familyId)).data.ownerId == request.auth.uid;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    match /families/{familyId} {
+      allow read: if isSignedIn() && (resource.data.ownerId == request.auth.uid || exists(/databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid)));
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+
+      match /members/{memberId} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn() && isOwner(familyId);
+      }
+
+      match /limits/{limitId} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn() && isOwner(familyId);
+      }
+
+      match /usage/{usageId} {
+        allow read: if isSignedIn();
+        allow create, update: if isSignedIn();
+      }
+    }
+  }
+}

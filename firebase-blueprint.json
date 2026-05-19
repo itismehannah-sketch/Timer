@@ -1,0 +1,72 @@
+{
+  "entities": {
+    "Family": {
+      "title": "Family",
+      "description": "Root configuration for a family unit.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "parentPin": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "ownerId", "parentPin", "createdAt"]
+    },
+    "Member": {
+      "title": "Member",
+      "description": "A parent or child in the family.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["parent", "child"] },
+        "avatar": { "type": "string" },
+        "familyId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "role", "familyId", "createdAt"]
+    },
+    "Limit": {
+      "title": "Limit",
+      "description": "Screen time settings for a family.",
+      "type": "object",
+      "properties": {
+        "minutesPerDay": { "type": "number" },
+        "startTime": { "type": "string", "description": "e.g. 08:00" },
+        "endTime": { "type": "string", "description": "e.g. 20:00" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["minutesPerDay", "updatedAt"]
+    },
+    "Usage": {
+      "title": "Usage",
+      "description": "Tracks daily screen time usage.",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string" },
+        "familyId": { "type": "string" },
+        "date": { "type": "string" },
+        "durationMinutes": { "type": "number" },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      },
+      "required": ["memberId", "familyId", "date", "durationMinutes", "lastUpdated"]
+    }
+  },
+  "firestore": {
+    "/families/{familyId}": {
+      "schema": "Family",
+      "description": "Main family document."
+    },
+    "/families/{familyId}/members/{memberId}": {
+      "schema": "Member",
+      "description": "Individual members of the family."
+    },
+    "/families/{familyId}/limits/daily": {
+      "schema": "Limit",
+      "description": "Shared daily screen time limits."
+    },
+    "/families/{familyId}/usage/{usageId}": {
+      "schema": "Usage",
+      "description": "Daily usage logs."
+    }
+  }
+}

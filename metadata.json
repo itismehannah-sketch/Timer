@@ -1,0 +1,6 @@
+{
+  "name": "SmartParent",
+  "description": "A comprehensive parental control dashboard and child-mode interface for managing screen time.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
